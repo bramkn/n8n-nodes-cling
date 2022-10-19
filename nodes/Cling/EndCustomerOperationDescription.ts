@@ -14,42 +14,7 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'BodyType',
-		name: 'endCustomerBodyType',
-		type: 'options',
-		options:[
-			{
-				name: 'Complete Body',
-				value: 'completeBody',
-			},
-			{
-				name: 'Per Field',
-				value: 'perField',
-			},
-		],
-		default: 'perField',
-		description: 'Type of Body to set. complete body or per Field.',
-		displayOptions: {
-			show: {
-				resource: ['endCustomer'],
-				operationEndCustomer: ['update','create'],
-			},
-		},
-	},
-	{
-		displayName: 'Body',
-		name: 'endCustomerPostBody',
-		type: 'string',
-		default: '',
-		description: 'Body to send in request',
-		displayOptions: {
-			show: {
-				resource: ['endCustomer'],
-				endCustomerBodyType: ['completeBody'],
-			},
-		},
-	},
+
 
 
 
@@ -119,6 +84,43 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 	// --------------------------------------------------------------------------------------------------------------------------------------
 	//            															Post
 	// --------------------------------------------------------------------------------------------------------------------------------------
+
+	{
+		displayName: 'BodyType',
+		name: 'endCustomerBodyType',
+		type: 'options',
+		options:[
+			{
+				name: 'Complete Body',
+				value: 'completeBody',
+			},
+			{
+				name: 'Per Field',
+				value: 'perField',
+			},
+		],
+		default: 'perField',
+		description: 'Type of Body to set. complete body or per Field.',
+		displayOptions: {
+			show: {
+				resource: ['endCustomer'],
+				operationEndCustomer: ['update','create'],
+			},
+		},
+	},
+	{
+		displayName: 'Body',
+		name: 'endCustomerPostBody',
+		type: 'string',
+		default: '',
+		description: 'Body to send in request',
+		displayOptions: {
+			show: {
+				resource: ['endCustomer'],
+				endCustomerBodyType: ['completeBody'],
+			},
+		},
+	},
 	{
 		displayName: 'Options',
 		name: 'optionsEndCustomerPost',

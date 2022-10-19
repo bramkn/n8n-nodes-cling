@@ -18,6 +18,8 @@ import {
 import {
 	LoadedResource,
 	ClingApiCredentials,
+	LoadedTemplate,
+	LoadedField,
 } from './types';
 
 
@@ -86,8 +88,12 @@ export async function clingGetApiToken(
 
 }
 
-export const toOptions = (items: LoadedResource[]) =>
+export const templateToOptions = (items: LoadedTemplate[]) =>
+	items.map(({ name, _id }) => ({ name, value: _id }));
+
+export const fieldsToOptions = (items: LoadedField[]) =>
 	items.map(({ name, id }) => ({ name, value: id }));
 
-
+export const toOptions = (items: LoadedResource[]) =>
+	items.map(({ name, id }) => ({ name, value: id }));
 
