@@ -1,5 +1,22 @@
 import { INodeProperties } from 'n8n-workflow';
 export const endCustomerOperationDescription: INodeProperties[] = [
+
+	{
+		displayName: 'ID',
+		name: 'endCustomerId',
+		type: 'string',
+		default: '',
+		description: 'End Customer ID',
+		displayOptions: {
+			show: {
+				resource: ['endCustomer'],
+				operationEndCustomer: ['get','update','delete','restore'],
+			},
+		},
+	},
+
+
+
 	// --------------------------------------------------------------------------------------------------------------------------------------
 	//            															Get
 	// --------------------------------------------------------------------------------------------------------------------------------------
@@ -58,6 +75,8 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 			},
 		],
 	},
+
+
 
 
 

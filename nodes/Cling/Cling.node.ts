@@ -49,13 +49,6 @@ export class Cling implements INodeType {
 				default: 'document',
 			},
 			...resourceDescription,
-			{
-				displayName: 'ID',
-				name: 'id',
-				type: 'string',
-				default: '',
-				description: 'ID of the resource you want to perform the operation on',
-			},
 			...endCustomerOperationDescription,
 		],
 	};
@@ -75,9 +68,9 @@ export class Cling implements INodeType {
 		// value the parameter "myString" resolves to.
 		// (This could be a different value for each item in case it contains an expression)
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-			const id = this.getNodeParameter('id', itemIndex, '') as string;
 			try {
 				if(resource === "endCustomer"){
+					const id = this.getNodeParameter('endCustomerId', itemIndex, '') as string;
 					const operation = this.getNodeParameter('operationEndCustomer', 0, '') as string;
 
 					if((operation !== "get" && id === "") && (operation !== "create" && id === "")){
@@ -117,6 +110,7 @@ export class Cling implements INodeType {
 					}
 				}
 				if(resource === "document"){
+					const id = this.getNodeParameter('documentId', itemIndex, '') as string;
 					const operation = this.getNodeParameter('operationDocument', 0, '') as string;
 					if(operation !== "get" && id === ""){
 						throw new NodeOperationError(this.getNode(), `Please enter the Id of the resource you want to perform the operation on`, {
