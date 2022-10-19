@@ -252,6 +252,11 @@ export class Cling implements INodeType {
 						returnItems.push(...this.helpers.returnJsonArray(data));
 					}
 
+					if(operation==="send"){
+						const data = await clingApiRequest.call(this,apiToken,'post',`${resource}/${id}/send`,{},{});
+						returnItems.push(...this.helpers.returnJsonArray(data));
+					}
+
 
 				}
 
