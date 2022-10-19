@@ -97,7 +97,7 @@ export class Cling implements INodeType {
 							body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
 						}
 						else{
-							const tempBody = this.getNodeParameter('EndCustomerPostBody', itemIndex, '') as string;
+							const tempBody = this.getNodeParameter('endCustomerPostBody', itemIndex, '') as string;
 							try{
 								body = JSON.parse(tempBody);
 							}

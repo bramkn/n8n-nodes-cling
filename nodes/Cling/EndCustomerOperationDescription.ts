@@ -39,7 +39,7 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 	},
 	{
 		displayName: 'Body',
-		name: 'EndCustomerPostBody',
+		name: 'endCustomerPostBody',
 		type: 'string',
 		default: '',
 		description: 'Body to send in request',
