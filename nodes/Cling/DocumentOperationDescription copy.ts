@@ -3,50 +3,14 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 
 	{
 		displayName: 'ID',
-		name: 'endCustomerId',
+		name: 'documentId',
 		type: 'string',
 		default: '',
-		description: 'End Customer ID',
+		description: 'Document ID',
 		displayOptions: {
 			show: {
-				resource: ['endCustomer'],
-				operationEndCustomer: ['get','update','delete','restore'],
-			},
-		},
-	},
-	{
-		displayName: 'BodyType',
-		name: 'endCustomerBodyType',
-		type: 'options',
-		options:[
-			{
-				name: 'Complete Body',
-				value: 'completeBody',
-			},
-			{
-				name: 'Per Field',
-				value: 'perField',
-			},
-		],
-		default: 'perField',
-		description: 'Type of Body to set. complete body or per Field.',
-		displayOptions: {
-			show: {
-				resource: ['endCustomer'],
-				operationEndCustomer: ['update','create'],
-			},
-		},
-	},
-	{
-		displayName: 'Body',
-		name: 'EndCustomerPostBody',
-		type: 'string',
-		default: '',
-		description: 'Body to send in request',
-		displayOptions: {
-			show: {
-				resource: ['endCustomer'],
-				endCustomerBodyType: ['completeBody'],
+				resource: ['document'],
+				operationEndCustomer: ['get','update','delete','restore','send'],
 			},
 		},
 	},
@@ -129,7 +93,6 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 			show: {
 				resource: ['endCustomer'],
 				operationEndCustomer: ['create','update'],
-				endCustomerBodyType: ['perField'],
 			},
 		},
 		options: [

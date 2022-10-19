@@ -90,16 +90,31 @@ export class Cling implements INodeType {
 							returnItems.push(...this.helpers.returnJsonArray(data));
 						}
 					}
-					if(operation==="create"){
-						const body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
-						const data = await clingApiRequest.call(this,apiToken,'post',`${resource}`,body,{});
+					if(operation==="create" || operation==="update"){
+						const bodyType = this.getNodeParameter('endCustomerBodyType', itemIndex, '') as string;
+						let body = {};
+						if(bodyType==="perField"){
+							body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
+						}
+						else{
+							const tempBody = this.getNodeParameter('EndCustomerPostBody', itemIndex, '') as string;
+							try{
+								body = JSON.parse(tempBody);
+							}
+							catch{
+								throw new NodeOperationError(this.getNode(), `Cannot parse body.`, {
+									itemIndex,
+								});
+							}
+						}
+						let method = 'post';
+						if(operation === 'update'){
+							method = 'put';
+						}
+						const data = await clingApiRequest.call(this,apiToken,method,`${resource}`,body,{});
 						returnItems.push(...this.helpers.returnJsonArray(data));
 					}
-					if(operation==="update"){
-						const body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
-						const data = await clingApiRequest.call(this,apiToken,'put',`${resource}/${id}`,body,{});
-						returnItems.push(...this.helpers.returnJsonArray(data));
-					}
+
 					if(operation==="delete"){
 						const data = await clingApiRequest.call(this,apiToken,'delete',`${resource}/${id}`,{},{});
 						returnItems.push(...this.helpers.returnJsonArray(data));

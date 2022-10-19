@@ -23,6 +23,10 @@ export const resourceDescription: INodeProperties[] = [
 				value: 'get',
 			},
 			{
+				name: 'Restore',
+				value: 'restore',
+			},
+			{
 				name: 'Send',
 				value: 'send',
 			},
