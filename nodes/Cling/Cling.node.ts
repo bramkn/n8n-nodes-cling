@@ -6,16 +6,23 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 
-export class ExampleNode implements INodeType {
+export class Cling implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Example Node',
-		name: 'exampleNode',
+		displayName: 'Cling Node',
+		name: 'cling',
 		group: ['transform'],
 		version: 1,
-		description: 'Basic Example Node',
+		icon: 'file:cling.svg',
+		description: 'Cling Node',
 		defaults: {
-			name: 'Example Node',
+			name: 'Cling',
 		},
+		credentials: [
+			{
+				name: 'clingCredentialsApi',
+				required: true,
+			},
+		],
 		inputs: ['main'],
 		outputs: ['main'],
 		properties: [
