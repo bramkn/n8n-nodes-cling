@@ -1,10 +1,14 @@
 import { IExecuteFunctions } from 'n8n-core';
 import {
+	IDataObject,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
+import { endCustomerOperationDescription } from './EndCustomerOperationDescription';
+import { clingApiRequest, clingGetApiToken } from './GenericFunctions';
+import { resourceDescription } from './ResourceDescription';
 
 export class Cling implements INodeType {
 	description: INodeTypeDescription = {
@@ -12,6 +16,7 @@ export class Cling implements INodeType {
 		name: 'cling',
 		group: ['transform'],
 		version: 1,
+		subtitle: '={{ $parameter["resource"] }}',
 		icon: 'file:cling.svg',
 		description: 'Cling Node',
 		defaults: {
@@ -26,16 +31,32 @@ export class Cling implements INodeType {
 		inputs: ['main'],
 		outputs: ['main'],
 		properties: [
-			// Node properties which the user gets displayed and
-			// can change on the node.
 			{
-				displayName: 'My String',
-				name: 'myString',
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'End Customer',
+						value: 'endCustomer',
+					},
+					{
+						name: 'Document',
+						value: 'document',
+					},
+				],
+				default: 'document',
+			},
+			...resourceDescription,
+			{
+				displayName: 'ID',
+				name: 'id',
 				type: 'string',
 				default: '',
-				placeholder: 'Placeholder value',
-				description: 'The description text',
+				description: 'ID of the resource you want to perform the operation on',
 			},
+			...endCustomerOperationDescription,
 		],
 	};
 
@@ -45,19 +66,68 @@ export class Cling implements INodeType {
 	// You can make async calls and use `await`.
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
+		const apiToken = await clingGetApiToken.call(this);
+		const returnItems: INodeExecutionData[] = [];
 
-		let item: INodeExecutionData;
-		let myString: string;
+		const resource =  this.getNodeParameter('resource', 0, '') as string;
 
 		// Iterates over all input items and add the key "myString" with the
 		// value the parameter "myString" resolves to.
 		// (This could be a different value for each item in case it contains an expression)
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+			const id = this.getNodeParameter('id', itemIndex, '') as string;
 			try {
-				myString = this.getNodeParameter('myString', itemIndex, '') as string;
-				item = items[itemIndex];
+				if(resource === "endCustomer"){
+					const operation = this.getNodeParameter('operationEndCustomer', 0, '') as string;
 
-				item.json['myString'] = myString;
+					if((operation !== "get" && id === "") && (operation !== "create" && id === "")){
+						throw new NodeOperationError(this.getNode(), `Please enter the Id of the resource you want to perform the operation on`, {
+							itemIndex,
+						});
+					}
+
+					if(operation==="get"){
+						if(id === ""){
+							const filters = this.getNodeParameter('optionsEndCustomerGet', itemIndex, {}) as IDataObject;
+							const data = await clingApiRequest.call(this,apiToken,'get',resource,{},filters);
+							returnItems.push(...this.helpers.returnJsonArray(data));
+						}
+						else{
+							const data = await clingApiRequest.call(this,apiToken,'get',`${resource}/${id}`,{},{});
+							returnItems.push(...this.helpers.returnJsonArray(data));
+						}
+					}
+					if(operation==="create"){
+						const body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
+						const data = await clingApiRequest.call(this,apiToken,'post',`${resource}`,body,{});
+						returnItems.push(...this.helpers.returnJsonArray(data));
+					}
+					if(operation==="update"){
+						const body = this.getNodeParameter('optionsEndCustomerPost', itemIndex, {}) as IDataObject;
+						const data = await clingApiRequest.call(this,apiToken,'put',`${resource}/${id}`,body,{});
+						returnItems.push(...this.helpers.returnJsonArray(data));
+					}
+					if(operation==="delete"){
+						const data = await clingApiRequest.call(this,apiToken,'delete',`${resource}/${id}`,{},{});
+						returnItems.push(...this.helpers.returnJsonArray(data));
+					}
+					if(operation==="restore"){
+						const data = await clingApiRequest.call(this,apiToken,'patch',`${resource}/${id}`,{},{});
+						returnItems.push(...this.helpers.returnJsonArray(data));
+					}
+				}
+				if(resource === "document"){
+					const operation = this.getNodeParameter('operationDocument', 0, '') as string;
+					if(operation !== "get" && id === ""){
+						throw new NodeOperationError(this.getNode(), `Please enter the Id of the resource you want to perform the operation on`, {
+							itemIndex,
+						});
+					}
+
+
+				}
+
+
 			} catch (error) {
 				// This node should never fail but we want to showcase how
 				// to handle errors.
@@ -78,6 +148,6 @@ export class Cling implements INodeType {
 			}
 		}
 
-		return this.prepareOutputData(items);
+		return this.prepareOutputData(returnItems);
 	}
 }
