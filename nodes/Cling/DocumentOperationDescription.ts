@@ -188,7 +188,7 @@ export const documentOperationDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['document'],
-				operationDocument: ['create','update'],
+				operationDocument: ['create'],
 				documentBodyType: ['perField'],
 			},
 		},
