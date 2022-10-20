@@ -238,7 +238,7 @@ export class Cling implements INodeType {
 						}
 						let method = 'post';
 						let requestBody:IDataObject ={};
-						let qs:IDataObject ={};
+						const qs:IDataObject ={};
 						let url = resource;
 						if(operation === 'update'){
 							method = 'put';
@@ -247,7 +247,7 @@ export class Cling implements INodeType {
 							if(documentName!==""){
 								requestBody['data.name'] = documentName;
 							}
-							url = url + '/' + id
+							url = url + '/' + id;
 							qs.type = 'paths';
 						}
 						else{
