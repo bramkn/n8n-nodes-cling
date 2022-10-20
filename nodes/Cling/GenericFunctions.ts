@@ -17,10 +17,10 @@ import {
 } from 'n8n-workflow';
 
 import {
-	LoadedResource,
 	ClingApiCredentials,
-	LoadedTemplate,
 	LoadedField,
+	LoadedResource,
+	LoadedTemplate,
 } from './types';
 
 

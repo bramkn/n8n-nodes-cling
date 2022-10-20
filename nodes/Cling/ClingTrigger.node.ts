@@ -127,8 +127,8 @@ export class ClingTrigger implements INodeType {
 				const body = {
 					type: event,
 					isActive: true,
-					url: currentWebhookUrl
-				}
+					url: currentWebhookUrl,
+				};
 
 				try {
 
@@ -149,7 +149,10 @@ export class ClingTrigger implements INodeType {
 				const apiToken = await clingGetApiToken.call(this);
 				const webhookData = this.getWorkflowStaticData('node');
 				try {
-					await clingApiRequest.call(this,apiToken,'delete',`webhookSubscription/${webhookData.webhookId}`,{},{}) as IDataObject;
+					const data = await clingApiRequest.call(this,apiToken,'delete',`webhookSubscription/${webhookData.webhookId}`,{},{}) as IDataObject;
+					if(data === undefined){
+						return true;
+					}
 				} catch (error) {
 					return false;
 				}

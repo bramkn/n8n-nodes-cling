@@ -246,6 +246,6 @@ export const endCustomerOperationDescription: INodeProperties[] = [
 			},
 		],
 	},
-]
+];
 
 

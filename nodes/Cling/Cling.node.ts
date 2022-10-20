@@ -80,11 +80,11 @@ export class Cling implements INodeType {
 				const fields = data.validationSchema.properties.data.properties.fields.default;
 				const keys = Object.keys(fields);
 				const fieldOptions:LoadedField[] = [];
-				for(var key of keys){
+				for(const key of keys){
 					fieldOptions.push({
 						id:key,
-						name:fields[key].label
-					})
+						name:fields[key].label,
+					});
 				}
 
 				return fieldsToOptions(fieldOptions as LoadedField[]);
@@ -108,7 +108,7 @@ export class Cling implements INodeType {
 		// (This could be a different value for each item in case it contains an expression)
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
-  // --------------------------------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------------------------
 	//            															End Customer
 	// --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ export class Cling implements INodeType {
 						let fields:IDataObject = {};
 						if(bodyType==="perField"){
 							const tempFields = this.getNodeParameter('fields.field', itemIndex, []) as IDataObject[];
-							for(var field of tempFields){
+							for(const field of tempFields){
 								fields[field.key as string] = {"value":field.value};
 							}
 
@@ -215,7 +215,7 @@ export class Cling implements INodeType {
 							}
 						}
 						let method = 'post';
-						let requestBody:IDataObject ={};
+						const requestBody:IDataObject ={};
 
 						if(operation === 'update'){
 							method = 'put';

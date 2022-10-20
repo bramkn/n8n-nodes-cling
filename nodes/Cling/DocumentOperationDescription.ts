@@ -233,6 +233,6 @@ export const documentOperationDescription: INodeProperties[] = [
 			},
 		},
 	},
-]
+];
 
 

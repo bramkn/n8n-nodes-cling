@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-cling",
   "version": "0.1.0",
-  "description": "",
+  "description": "Regular and Trigger node for the Clink API",
   "keywords": [
     "n8n-community-node-package"
   ],
