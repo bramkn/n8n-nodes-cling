@@ -120,7 +120,7 @@ export class ClingTrigger implements INodeType {
 				const webhookData = this.getWorkflowStaticData('node');
 				const event = this.getNodeParameter('event') as string;
 
-				if(currentWebhookUrl.toLocaleLowerCase().startsWith('http') || currentWebhookUrl.toLocaleLowerCase().startsWith('www')){
+				if(currentWebhookUrl.toLocaleLowerCase().startsWith('http://') || currentWebhookUrl.toLocaleLowerCase().startsWith('www.')){
 					throw new NodeOperationError(this.getNode(), 'not a valid webhook URL, make sure to have an HTTPS url.');
 				}
 
