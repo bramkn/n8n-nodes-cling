@@ -211,9 +211,17 @@ export class Cling implements INodeType {
 
 						let fields:IDataObject = {};
 						if(bodyType==="perField"){
-							const tempFields = this.getNodeParameter('fields.field', itemIndex, []) as IDataObject[];
-							for(const field of tempFields){
-								fields[field.key as string] = {"value":field.value};
+							if(operation==="create"){
+								const tempFields = this.getNodeParameter('fields.field', itemIndex, []) as IDataObject[];
+								for(const field of tempFields){
+									fields[field.key as string] = {"value":field.value};
+								}
+							}
+							else{
+								const tempFields = this.getNodeParameter('updateFields.field', itemIndex, []) as IDataObject[];
+								for(const field of tempFields){
+									fields[`data.fields.${field.key as string}.value`] = field.value;
+								}
 							}
 
 						}
@@ -229,16 +237,18 @@ export class Cling implements INodeType {
 							}
 						}
 						let method = 'post';
-						const requestBody:IDataObject ={};
-
+						let requestBody:IDataObject ={};
+						let qs:IDataObject ={};
+						let url = resource;
 						if(operation === 'update'){
 							method = 'put';
+							requestBody = fields;
 							const documentName = this.getNodeParameter('documentName', itemIndex, '') as string;
 							if(documentName!==""){
-								requestBody.data = {
-									name: documentName,
-									fields};
+								requestBody['data.name'] = documentName;
 							}
+							url = url + '/' + id
+							qs.type = 'paths';
 						}
 						else{
 							const templateId = this.getNodeParameter('templateId', itemIndex, '') as string;
@@ -250,10 +260,7 @@ export class Cling implements INodeType {
 								name: documentName,
 								fields};
 						}
-
-						console.log(requestBody);
-
-						const data = await clingApiRequest.call(this,apiToken,method,`${resource}`,requestBody,{});
+						const data = await clingApiRequest.call(this,apiToken,method,`${url}`,requestBody,qs);
 						returnItems.push(...this.helpers.returnJsonArray(data));
 					}
 
