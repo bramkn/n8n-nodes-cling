@@ -9,6 +9,7 @@ import {
 import {
 	IBinaryData,
 	IDataObject,
+	IHookFunctions,
 	ILoadOptionsFunctions,
 	INodeExecutionData,
 	NodeApiError,
@@ -25,7 +26,7 @@ import {
 
 
 export async function clingApiRequest(
-	this: IExecuteFunctions | ILoadOptionsFunctions,
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 	apiToken:string,
 	method: string,
 	endpoint: string,
@@ -61,7 +62,7 @@ export async function clingApiRequest(
 }
 
 export async function clingGetApiToken(
-	this: IExecuteFunctions | ILoadOptionsFunctions,
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 ) {
 	const credentials = await this.getCredentials('clingCredentialsApi') as ClingApiCredentials;
 	const options: OptionsWithUri = {
