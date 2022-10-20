@@ -56,7 +56,7 @@ export async function clingApiRequest(
 	}
 	try {
 		return await this.helpers.request!(options);
-	} catch (error:any) {
+	} catch (error) {
 		throw new NodeApiError(this.getNode(), error);
 	}
 }
@@ -81,7 +81,7 @@ export async function clingGetApiToken(
 	try {
 		const authReply = await this.helpers.request!(options);
 		return authReply.token;
-	} catch (error:any) {
+	} catch (error) {
 		throw new NodeApiError(this.getNode(), error);
 	}
 

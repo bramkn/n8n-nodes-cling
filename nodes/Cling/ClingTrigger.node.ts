@@ -120,6 +120,10 @@ export class ClingTrigger implements INodeType {
 				const webhookData = this.getWorkflowStaticData('node');
 				const event = this.getNodeParameter('event') as string;
 
+				if(currentWebhookUrl.toLocaleLowerCase().startsWith('http') || currentWebhookUrl.toLocaleLowerCase().startsWith('www')){
+					throw new NodeOperationError(this.getNode(), 'not a valid webhook URL, make sure to have an HTTPS url.');
+				}
+
 				const body = {
 					type: event,
 					isActive: true,
@@ -137,12 +141,9 @@ export class ClingTrigger implements INodeType {
 					return true;
 
 				} catch (error) {
-					if (error.statusCode === 404) {
 						return false;
-					}
 				}
 
-				return true;
 			},
 			async delete(this: IHookFunctions): Promise<boolean> {
 				const apiToken = await clingGetApiToken.call(this);

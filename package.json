@@ -33,7 +33,8 @@
       "dist/credentials/ClingCredentialsApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Cling/Cling.node.js"
+      "dist/nodes/Cling/Cling.node.js",
+      "dist/nodes/Cling/ClingTrigger.node.js"
     ]
   },
   "devDependencies": {
