@@ -74,10 +74,24 @@ export class Cling implements INodeType {
 			},
 
 			async getFields(this: ILoadOptionsFunctions) {
-				const templateId = this.getNodeParameter('templateId', '') as string;
 				const apiToken = await clingGetApiToken.call(this);
-				const data = await clingApiRequest.call(this,apiToken,'get',`template/${templateId}`);
-				const fields = data.validationSchema.properties.data.properties.fields.default;
+				const templateId = this.getNodeParameter('templateId', '') as string;
+				let fields;
+				if(templateId === ''){
+					const documentId = this.getNodeParameter('documentId', '') as string;
+					if(documentId === ''){
+						throw new NodeOperationError(this.getNode(), `Cannot find fields.`);
+					}
+					else{
+						const data = await clingApiRequest.call(this,apiToken,'get',`document/${documentId}`);
+						fields = data.template.validationSchema.properties.data.properties.fields.default;
+					}
+				}
+				else{
+					const data = await clingApiRequest.call(this,apiToken,'get',`template/${templateId}`);
+					fields = data.validationSchema.properties.data.properties.fields.default;
+				}
+				//const
 				const keys = Object.keys(fields);
 				const fieldOptions:LoadedField[] = [];
 				for(const key of keys){

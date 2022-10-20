@@ -220,6 +220,51 @@ export const documentOperationDescription: INodeProperties[] = [
 		],
 	},
 	{
+		displayName: 'Fields',
+		name: 'updateFields',
+		placeholder: 'Add Field',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+			sortable: true,
+		},
+		description: 'Record to create',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['document'],
+				operationDocument: ['update'],
+				documentBodyType: ['perField'],
+			},
+		},
+		options: [
+			{
+				name: 'field',
+				displayName: 'Field',
+				values: [
+					{
+						displayName: 'Field Name or ID',
+						name: 'key',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getFields',
+							loadOptionsDependsOn:['documentId'],
+						},
+						default: '',
+						description: 'Key of the field to assign a value to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'Value of the field',
+					},
+				],
+			},
+		],
+	},
+	{
 		displayName: 'Fields Object',
 		name: 'documentPostBody',
 		type: 'string',
