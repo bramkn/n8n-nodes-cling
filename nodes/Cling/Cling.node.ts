@@ -68,7 +68,13 @@ export class Cling implements INodeType {
 
 			async getEndCustomers(this: ILoadOptionsFunctions) {
 				const apiToken = await clingGetApiToken.call(this);
-				const data = await clingApiRequest.call(this,apiToken,'get','endCustomer');
+				const qs = {
+					"_sort":"updatedAt",
+					"_order":"DESC",
+					"_start":0,
+					"_end":1000
+				};
+				const data = await clingApiRequest.call(this,apiToken,'get','endCustomer',{},qs);
 
 				return toOptions(data as LoadedResource[]);
 			},
