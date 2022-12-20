@@ -72,7 +72,7 @@ export class Cling implements INodeType {
 					"_sort":"updatedAt",
 					"_order":"DESC",
 					"_start":0,
-					"_end":1000
+					"_end":1000,
 				};
 				const data = await clingApiRequest.call(this,apiToken,'get','endCustomer',{},qs);
 
