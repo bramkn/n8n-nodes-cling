@@ -18,6 +18,7 @@ import {
 
 import {
 	ClingApiCredentials,
+	ClingApiTokenCredentials,
 	LoadedField,
 	LoadedResource,
 	LoadedTemplate,
@@ -33,10 +34,22 @@ export async function clingApiRequest(
 	body: IDataObject = {},
 	qs: IDataObject = {},
 ) {
-	const credentials = await this.getCredentials('clingCredentialsApi') as ClingApiCredentials;
+	const authenticationMethod = this.getNodeParameter(
+		'authentication',
+		0,
+		'basicAuth',
+	) as string;
+	let auth = {};
+	if(authenticationMethod ==='basicAuth'){
+		auth = {authorization : `JWT ${apiToken}`};
+	}
+	else{
+		auth = {apikey : `${apiToken}`};
+	}
+
 	const options: OptionsWithUri = {
 		headers: {
-			'authorization': `JWT ${apiToken}`,
+			...auth,
 		},
 		method,
 		body,
@@ -64,28 +77,38 @@ export async function clingApiRequest(
 export async function clingGetApiToken(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 ) {
-	const credentials = await this.getCredentials('clingCredentialsApi') as ClingApiCredentials;
-	const options: OptionsWithUri = {
-		headers:{},
-		method:"post",
-		body:{
-			"email":credentials.email,
-			"password":credentials.password,
-		},
-		uri: `https://api.cling.se/auth/companyUser`,
-		json: true,
-		gzip: true,
-		rejectUnauthorized: true,
-	};
+	const authenticationMethod = this.getNodeParameter(
+		'authentication',
+		0,
+		'basicAuth',
+	) as string;
 
-	try {
-		const authReply = await this.helpers.request!(options);
-		return authReply.token;
-	} catch (error) {
-		throw new NodeApiError(this.getNode(), error);
+	if(authenticationMethod ==='basicAuth'){
+		const credentials = await this.getCredentials('clingCredentialsApi') as ClingApiCredentials;
+		const options: OptionsWithUri = {
+			headers:{},
+			method:"post",
+			body:{
+				"email":credentials.email,
+				"password":credentials.password,
+			},
+			uri: `https://api.cling.se/auth/companyUser`,
+			json: true,
+			gzip: true,
+			rejectUnauthorized: true,
+		};
+
+		try {
+			const authReply = await this.helpers.request!(options);
+			return authReply.token;
+		} catch (error) {
+			throw new NodeApiError(this.getNode(), error);
+		}
 	}
-
-
+	else{
+		const credentials = await this.getCredentials('clingCredentialsApiTokenApi') as ClingApiTokenCredentials;
+		return credentials.apiToken;
+	}
 
 }
 

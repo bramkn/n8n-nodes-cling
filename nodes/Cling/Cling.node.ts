@@ -29,11 +29,41 @@ export class Cling implements INodeType {
 			{
 				name: 'clingCredentialsApi',
 				required: true,
+				displayOptions: {
+					show: {
+						authentication: ['basicAuth'],
+					},
+				},
+			},
+			{
+				name: 'clingCredentialsApiTokenApi',
+				required: true,
+				displayOptions: {
+					show: {
+						authentication: ['apiToken'],
+					},
+				},
 			},
 		],
 		inputs: ['main'],
 		outputs: ['main'],
 		properties: [
+			{
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				options: [
+					{
+						name: 'Basic Auth',
+						value: 'basicAuth',
+					},
+					{
+						name: 'Api Token',
+						value: 'apiToken',
+					},
+				],
+				default: 'basicAuth',
+			},
 			{
 				displayName: 'Resource',
 				name: 'resource',

@@ -3,6 +3,10 @@ export type ClingApiCredentials = {
 	password: string;
 }
 
+export type ClingApiTokenCredentials = {
+	apiToken:string;
+}
+
 export type LoadedResource = {
 	id: number;
 	name: string;

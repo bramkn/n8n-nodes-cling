@@ -31,6 +31,10 @@ export class ClingTrigger implements INodeType {
 				name: 'clingCredentialsApi',
 				required: true,
 			},
+			{
+				name: 'clingCredentialsApiTokenApi',
+				required: true,
+			},
 		],
 		webhooks: [
 			{
@@ -47,6 +51,22 @@ export class ClingTrigger implements INodeType {
 			},
 		],
 		properties: [
+			{
+				displayName: 'Authentication',
+				name: 'authentication',
+				type: 'options',
+				options: [
+					{
+						name: 'Basic Auth',
+						value: 'basicAuth',
+					},
+					{
+						name: 'Api Token',
+						value: 'apiToken',
+					},
+				],
+				default: 'basicAuth',
+			},
 			{
 				displayName: 'Event',
 				name: 'event',
