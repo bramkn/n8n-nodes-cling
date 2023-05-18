@@ -21,3 +21,8 @@ export type LoadedField = {
 	id: string;
 	name: string;
 }
+
+export type LoadedArticles = {
+	ArticleId: string;
+	name: string;
+}

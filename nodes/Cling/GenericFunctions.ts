@@ -19,6 +19,7 @@ import {
 import {
 	ClingApiCredentials,
 	ClingApiTokenCredentials,
+	LoadedArticles,
 	LoadedField,
 	LoadedResource,
 	LoadedTemplate,
@@ -46,7 +47,6 @@ export async function clingApiRequest(
 	else{
 		auth = {apikey : `${apiToken}`};
 	}
-
 	const options: OptionsWithUri = {
 		headers: {
 			...auth,
@@ -68,7 +68,24 @@ export async function clingApiRequest(
 		delete options.body;
 	}
 	try {
-		return await this.helpers.request!(options);
+		let i = 0;
+		do {
+			setTimeout(() => {  },  1000);
+			try{
+				const returnObjects = await this.helpers.request!(options);
+				if(returnObjects !== undefined){
+					return returnObjects;
+				}
+				else{
+					i = i + 1;
+				}
+			}
+			catch{
+				i = i + 1;
+			}
+
+		} while (i < 25);
+		return [];
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error);
 	}
@@ -99,8 +116,24 @@ export async function clingGetApiToken(
 		};
 
 		try {
-			const authReply = await this.helpers.request!(options);
-			return authReply.token;
+			let i = 0;
+		do {
+			setTimeout(() => {  },  1000);
+				try{
+					const returnObjects = await this.helpers.request!(options);
+					if(returnObjects !== undefined){
+						return returnObjects.token;
+					}
+					else{
+						i = i + 1;
+					}
+				}
+				catch{
+					i = i + 1;
+				}
+
+			} while (i < 25);
+			return [];
 		} catch (error) {
 			throw new NodeApiError(this.getNode(), error);
 		}
@@ -114,6 +147,9 @@ export async function clingGetApiToken(
 
 export const templateToOptions = (items: LoadedTemplate[]) =>
 	items.map(({ name, _id }) => ({ name, value: _id }));
+
+export const articlesToOptions = (items: LoadedArticles[]) =>
+	items.map(({ name }) => ({ name, value: name }));
 
 export const fieldsToOptions = (items: LoadedField[]) =>
 	items.map(({ name, id }) => ({ name, value: id }));

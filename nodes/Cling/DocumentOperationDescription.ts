@@ -32,11 +32,11 @@ export const documentOperationDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'End Customer Name or ID',
+		displayName: 'End Customer Names or IDs',
 		name: 'endCustomerId',
-		type: 'options',
-		default: '',
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
+		type: 'multiOptions',
+		default: [],
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
 		typeOptions: {
 			loadOptionsDependsOn:['resource'],
 			loadOptionsMethod: 'getEndCustomers',
@@ -214,6 +214,68 @@ export const documentOperationDescription: INodeProperties[] = [
 						type: 'string',
 						default: '',
 						description: 'Value of the field',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Articles',
+		name: 'articles',
+		placeholder: 'Add Article',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+			sortable: true,
+		},
+		description: 'Articles to Add',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['document'],
+				operationDocument: ['create'],
+				documentBodyType: ['perField'],
+			},
+		},
+		options: [
+			{
+				name: 'article',
+				displayName: 'Article',
+				values: [
+					{
+						displayName: 'Article Name or ID',
+						name: 'key',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getArticles',
+							loadOptionsDependsOn:['templateId'],
+						},
+						default: '',
+						description: 'Key of the article to assign a value to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>.',
+					},
+					{
+						displayName: 'Field',
+						name: 'field',
+						type: 'options',
+						options:[
+							{
+								name: 'Price',
+								value: 'price',
+							},
+							{
+								name: 'Quantity',
+								value: 'quantity',
+							},
+						],
+						default: 'quantity',
+						description: 'Field of the article',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'number',
+						default: 0,
+						description: 'Value of the article field',
 					},
 				],
 			},
