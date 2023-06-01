@@ -92,7 +92,6 @@ export class Cling implements INodeType {
 			async getTemplates(this: ILoadOptionsFunctions) {
 				const apiToken = await clingGetApiToken.call(this);
 				const data = await clingApiRequest.call(this,apiToken,'get','template');
-
 				return templateToOptions(data.items as LoadedTemplate[]);
 			},
 
@@ -100,7 +99,6 @@ export class Cling implements INodeType {
 				const templateId = this.getNodeParameter('templateId', '') as string;
 				const apiToken = await clingGetApiToken.call(this);
 				const data = await clingApiRequest.call(this,apiToken,'get',`template/${templateId}`);
-
 				return articlesToOptions(data.validationSchema.properties.articles.default as LoadedArticles[]);
 			},
 
@@ -113,7 +111,6 @@ export class Cling implements INodeType {
 					"_end":1000,
 				};
 				const data = await clingApiRequest.call(this,apiToken,'get','endCustomer',{},qs);
-
 				return toOptions(data as LoadedResource[]);
 			},
 
@@ -164,7 +161,7 @@ export class Cling implements INodeType {
 		try{
 			const templateId =  this.getNodeParameter('templateId', 0, '') as string;
 			const templateData = await clingApiRequest.call(this,apiToken,'get',`template/${templateId}`) || {};
-			articleData = templateData.validationSchema.properties.articles || [];
+			articleData = templateData.validationSchema.properties.articles.default || [];
 		}
 		catch{
 
@@ -269,21 +266,26 @@ export class Cling implements INodeType {
 							if(operation==="create"){
 								const tempFields = this.getNodeParameter('fields.field', itemIndex, []) as IDataObject[];
 								const tempArticles = this.getNodeParameter('articles.article', itemIndex, []) as IDataObject[];
+								console.log({tempArticles});
 								for(const field of tempFields){
 									fields[field.key as string] = {"value":field.value};
 								}
-								if(tempArticles.length === 0){
-
+								if(tempArticles.length > 0){
 									for(let articleIndex = 0; articleIndex < articleData.length; articleIndex++){
-										const tempArticle = tempArticles.find((x) => (x.name === articleData[articleIndex].name));
-										if(tempArticle){
+										const tempArticle = tempArticles.filter((x) => (x.key === articleData[articleIndex].name));
+										console.log({tempArticle});
+										if(tempArticle.length>0){
 											let tmp = articleData[articleIndex];
-											/// to be implemented -> Replace field values from the default article info with what is filled in in the node.
+											for(var field of tempArticle){
+												tmp[field.field as string] = field.value;
+											}
+											articles.push(tmp);
 										}
 										else{
 											articles.push(articleData[articleIndex]);
 										}
 									}
+									console.log({articles});
 								}
 							}
 							else{
@@ -324,19 +326,18 @@ export class Cling implements INodeType {
 							const endCustomerId = this.getNodeParameter('endCustomerId', itemIndex, []) as string[];
 							const documentName = this.getNodeParameter('documentName', itemIndex, '') as string;
 							requestBody.templateId = templateId;
-							if(endCustomerId.length === 1){
-								requestBody.endCustomerId = endCustomerId[0];
-							}
-							else{
-								requestBody.endCustomerIds = endCustomerId;
-							}
+							requestBody.endCustomerIds = endCustomerId;
 
 							requestBody.data = {
 								name: documentName,
-								fields};
+								fields,
+							};
+							requestBody.articles = articles;
 						}
+
 						const data = await clingApiRequest.call(this,apiToken,method,`${url}`,requestBody,qs);
 						returnItems.push(...this.helpers.returnJsonArray(data));
+
 					}
 
 					if(operation==="delete"){
@@ -352,11 +353,7 @@ export class Cling implements INodeType {
 						const data = await clingApiRequest.call(this,apiToken,'post',`${resource}/${id}/send`,{},{});
 						returnItems.push(...this.helpers.returnJsonArray(data));
 					}
-
-
 				}
-
-
 			} catch (error) {
 				// This node should never fail but we want to showcase how
 				// to handle errors.
