@@ -157,7 +157,7 @@ export class Cling implements INodeType {
 		const returnItems: INodeExecutionData[] = [];
 
 		const resource =  this.getNodeParameter('resource', 0, '') as string;
-		let articleData: string | any[] = [];
+		let articleData: IDataObject[] = [];
 		try{
 			const templateId =  this.getNodeParameter('templateId', 0, '') as string;
 			const templateData = await clingApiRequest.call(this,apiToken,'get',`template/${templateId}`) || {};
@@ -261,22 +261,20 @@ export class Cling implements INodeType {
 						const bodyType = this.getNodeParameter('documentBodyType', itemIndex, '') as string;
 
 						let fields:IDataObject = {};
-						let articles:IDataObject[] = [];
+						const articles:IDataObject[] = [];
 						if(bodyType==="perField"){
 							if(operation==="create"){
 								const tempFields = this.getNodeParameter('fields.field', itemIndex, []) as IDataObject[];
 								const tempArticles = this.getNodeParameter('articles.article', itemIndex, []) as IDataObject[];
-								console.log({tempArticles});
 								for(const field of tempFields){
 									fields[field.key as string] = {"value":field.value};
 								}
 								if(tempArticles.length > 0){
 									for(let articleIndex = 0; articleIndex < articleData.length; articleIndex++){
 										const tempArticle = tempArticles.filter((x) => (x.key === articleData[articleIndex].name));
-										console.log({tempArticle});
 										if(tempArticle.length>0){
-											let tmp = articleData[articleIndex];
-											for(var field of tempArticle){
+											const tmp = articleData[articleIndex];
+											for(const field of tempArticle){
 												tmp[field.field as string] = field.value;
 											}
 											articles.push(tmp);
@@ -285,7 +283,6 @@ export class Cling implements INodeType {
 											articles.push(articleData[articleIndex]);
 										}
 									}
-									console.log({articles});
 								}
 							}
 							else{
